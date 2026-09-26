@@ -1,40 +1,60 @@
-package com.portfolio.app.model;
+package com.portfolioproject.app.model;
 
-public class Asset {
-	    private String assetId;
-	    private String assetName;
-	    private double purchasePrice;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-	    // Constructor
-	    public Asset(String assetId, String assetName, double purchasePrice) {
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "type"
+)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = Stock.class, name = "stock"),
+        @JsonSubTypes.Type(value = MutualFund.class, name = "mutualFund")
+})
+public abstract class Asset {
 
-	        this.assetId = assetId;
-	        this.assetName = assetName;
-	        this.purchasePrice = purchasePrice;
-	    
-		}
+    private String assetId;
+    private String assetName;
+    private double purchasePrice;
 
-		public String getAssetId() {
-	        return assetId;
-	    }
+    // Default constructor - required for Jackson
+    public Asset() {
+    }
 
-	    public String getAssetName() {
-	        return assetName;
-	    }
+    // Parameterized constructor
+    public Asset(String assetId, String assetName, double purchasePrice) {
+        this.assetId = assetId;
+        this.assetName = assetName;
+        this.purchasePrice = purchasePrice;
+    }
 
-	    public double getPurchasePrice() {
-	        return purchasePrice;
-	    }
+    // Getters
+    public String getAssetId() {
+        return assetId;
+    }
 
-		public void display() {
-			System.out.println("Asset ID:" + assetId);
-			System.out.println("Asset Name:" + assetName);
-			System.out.println("Purchase Price:" + purchasePrice);
-		}
+    public String getAssetName() {
+        return assetName;
+    }
 
-	    
-	
-	
-		
+    public double getPurchasePrice() {
+        return purchasePrice;
+    }
 
-	}
+    // Setters - required for Jackson
+    public void setAssetId(String assetId) {
+        this.assetId = assetId;
+    }
+
+    public void setAssetName(String assetName) {
+        this.assetName = assetName;
+    }
+
+    public void setPurchasePrice(double purchasePrice) {
+        this.purchasePrice = purchasePrice;
+    }
+
+    // Abstract method
+    public abstract double calculateCurrentValue();
+}
